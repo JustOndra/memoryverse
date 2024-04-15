@@ -29,5 +29,5 @@ export const loadPokemon = async () => {
 };
 
 const sortResults = (data: PokemonData[]) => {
-  return data.sort((_) => Math.random() - 0.5);
+  return data.sort(() => Math.random() - 0.5);
 };
