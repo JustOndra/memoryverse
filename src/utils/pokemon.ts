@@ -1,16 +1,6 @@
 import axios from 'axios';
-
-export type PokemonData = {
-  id: number;
-  name: string;
-  sprites: {
-    front_default: string;
-  };
-};
-
-const randomNumbers = () => {
-  return Math.floor(Math.random() * 101);
-};
+import { PokemonData } from '../types';
+import { randomNumbers, shuffleCards } from './utils';
 
 export const loadPokemon = async () => {
   const randomIds = new Set();
@@ -25,9 +15,5 @@ export const loadPokemon = async () => {
 
   const results = await Promise.all(pokePromises);
   const pokemon = [...results, ...results];
-  return sortResults(pokemon);
-};
-
-const sortResults = (data: PokemonData[]) => {
-  return data.sort(() => Math.random() - 0.5);
+  return shuffleCards(pokemon);
 };

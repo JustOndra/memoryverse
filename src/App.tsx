@@ -1,11 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { loadPokemon } from './utils/fetchPokemons';
-import Card from './components/Card';
+import { loadPokemon } from './utils/pokemon';
+import Game from './pages/Game';
 
 function App() {
+  const queryFn = loadPokemon;
+
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['pokemons'],
-    queryFn: loadPokemon,
+    queryFn: queryFn,
   });
 
   if (isError) {
@@ -17,20 +19,9 @@ function App() {
   }
 
   return (
-    <>
-      <div className="container m-auto h-screen">
-        <div className="grid grid-cols-4 justify-center items-center h-full">
-          {data.map((pokemon, index) => (
-            <Card
-              name={pokemon.name}
-              id={pokemon.id}
-              sprites={pokemon.sprites}
-              key={index}
-            />
-          ))}
-        </div>
-      </div>
-    </>
+    <div className="bg-gradient-to-b from-teal-400 to-blue-500">
+      {data && <Game data={data} />}
+    </div>
   );
 }
 

@@ -1,24 +1,30 @@
-import { useState } from 'react';
-import { PokemonData } from '../utils/fetchPokemons';
+import { PokemonData } from '../types';
 
-const Card = (data: PokemonData) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+type IProps = {
+  data: PokemonData;
+  isFlipped: boolean;
+  index: number;
+  handleFlip: (index: number, id: number) => void;
+  isMatched: boolean;
+};
 
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
-  };
-
+const Card = ({ data, isFlipped, handleFlip, index, isMatched }: IProps) => {
   return (
-    <div className="cursor-pointer perspective w-48 h-48" onClick={handleFlip}>
+    <div
+      className={`${
+        isMatched ? 'invisible' : ''
+      } "cursor-pointer perspective w-40 h-40 hover:scale-110 duration-500"`}
+      onClick={() => handleFlip(index, data.id)}
+    >
       <div
-        className={`relative preserve-3d ${
+        className={`relative preserve-3d border-4 border-black  ${
           isFlipped ? 'my-rotate-y-180' : ''
         } w-full h-full duration-1000`}
       >
-        <div className="absolute backface-hidden w-full h-full bg-gray-400 flex justify-center items-center">
+        <div className="absolute backface-hidden w-full h-full bg-white flex justify-center items-center">
           <img src="./pokeball.png" alt="Pokeball" className="w-24 h-24" />
         </div>
-        <div className="absolute my-rotate-y-180 backface-hidden w-full h-full overflow-hidden">
+        <div className="absolute my-rotate-y-180 backface-hidden bg-white w-full h-full overflow-hidden">
           <div className="flex flex-col items-center gap-4">
             <img
               src={data.sprites.front_default}
