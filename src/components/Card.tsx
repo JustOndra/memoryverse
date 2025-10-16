@@ -23,7 +23,7 @@ const Card = ({
     h-40 
     hover:scale-110 
     duration-500
-    perspective-1000
+    perspective-midrange
     ${isMatched ? 'invisible' : ''}
   `;
 

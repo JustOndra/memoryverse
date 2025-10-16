@@ -14,8 +14,6 @@ const Game = ({ settings }: GameProps) => {
     queryFn: () => fetchGameData(settings.gameType),
   });
 
-  console.log(data);
-
   const { flippedCards, matchedCards, handleFlip } = useMemoryGame(data);
 
   if (isLoading) return <div>Loading...</div>;

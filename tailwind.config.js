@@ -4,5 +4,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [require('tailwindcss-3d')],
+  plugins: [],
 };
