@@ -1,71 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Card from '../components/Card';
-import { PokemonData } from '../types';
+import { useMemoryGame } from '../hooks/useMemoryGame';
+import { fetchGameData } from '../services/api';
+import { GameSettings } from '../types';
 
 interface GameProps {
-  data: PokemonData[];
+  settings: GameSettings;
 }
 
-const Game = ({ data }: GameProps) => {
-  const [choiceOne, setChoiceOne] = useState<number | null>(null);
-  const [choiceTwo, setChoiceTwo] = useState<number | null>(null);
-  const [disabled, setDisabled] = useState(false);
-  const [matchedCards, setMatchedCards] = useState<number[]>([]);
-  const [firstPick, setFirstPick] = useState(true);
-  const [flippedCards, setFlippedCards] = useState<{
-    [key: number]: boolean;
-  }>({});
+const Game = ({ settings }: GameProps) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['game-data', settings.gameType],
+    queryFn: () => fetchGameData(settings.gameType),
+  });
 
-  const resetFlippedCards = () => {
-    setFlippedCards({});
-    setChoiceOne(null);
-    setChoiceTwo(null);
-    setFirstPick(true);
-    setDisabled(false);
-  };
+  console.log(data);
 
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (choiceOne !== null && choiceTwo !== null) {
-      if (choiceOne === choiceTwo) {
-        setDisabled((prev) => !prev);
-        setMatchedCards((prevMatchedCards) => [...prevMatchedCards, choiceOne]);
-        timeout = setTimeout(() => {
-          resetFlippedCards();
-        }, 1000);
-      } else {
-        setDisabled((prev) => !prev);
-        timeout = setTimeout(() => {
-          resetFlippedCards();
-        }, 1000);
-      }
-    }
-    return () => clearTimeout(timeout);
-  }, [choiceOne, choiceTwo]);
+  const { flippedCards, matchedCards, handleFlip } = useMemoryGame(data);
 
-  const handleFlip = (index: number, id: number) => {
-    if (disabled) return;
-    setFlippedCards((prev) => ({ ...prev, [index]: !prev[index] }));
-    if (firstPick) {
-      setChoiceOne(id);
-      setFirstPick(false);
-    } else {
-      setChoiceTwo(id);
-      setFirstPick(true);
-    }
-  };
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching data</div>;
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="grid grid-cols-4 gap-4">
-        {data.map((pokemon, index) => (
+      <div className="grid grid-cols-4 gap-4 perspective">
+        {data?.map((card, index) => (
           <Card
-            data={pokemon}
             key={index}
+            card={card}
             index={index}
-            isMatched={!!matchedCards.includes(pokemon.id)}
-            isFlipped={!!flippedCards[index]}
+            isFlipped={flippedCards.includes(index)}
+            isMatched={matchedCards.includes(card.id)}
             handleFlip={handleFlip}
+            gameType={settings.gameType}
           />
         ))}
       </div>

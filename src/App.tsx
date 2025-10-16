@@ -1,26 +1,50 @@
-import { useQuery } from '@tanstack/react-query';
-import { loadPokemon } from './utils/pokemon';
+import { useState } from 'react';
+import MainMenu from './components/MainMenu';
+import NewGameSetup from './components/NewGameSetup';
 import Game from './pages/Game';
+import { GameSettings } from './types';
+import { GameStep } from './types/enums';
 
 function App() {
-  const queryFn = loadPokemon;
-
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ['pokemons'],
-    queryFn: queryFn,
+  const [currentStep, setCurrentStep] = useState<GameStep>(GameStep.MAIN_MENU);
+  const [settings, setSettings] = useState<GameSettings>({
+    playerName: '',
+    gameType: 'pokemon',
   });
 
-  if (isError) {
-    return <p>{error.message}</p>;
-  }
+  const handleStartNewGame = () => {
+    setCurrentStep(GameStep.NEW_GAME_SETUP);
+  };
 
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
+  const handleStartPlaying = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentStep(GameStep.PLAYING);
+  };
+
+  const handleSettingsChange = (newSettings: GameSettings) => {
+    setSettings(newSettings);
+  };
+
+  const handleBackToMainMenu = () => {
+    setCurrentStep(GameStep.MAIN_MENU);
+  };
 
   return (
-    <div className="bg-gradient-to-b from-teal-400 to-blue-500">
-      {data && <Game data={data} />}
+    <div className="bg-gradient-to-b from-teal-400 to-blue-500 min-h-screen">
+      <div className="flex items-center justify-center h-screen">
+        {currentStep === GameStep.MAIN_MENU && (
+          <MainMenu onStartNewGame={handleStartNewGame} />
+        )}
+        {currentStep === GameStep.NEW_GAME_SETUP && (
+          <NewGameSetup
+            settings={settings}
+            onSettingsChange={handleSettingsChange}
+            onStartPlaying={handleStartPlaying}
+            onBack={handleBackToMainMenu}
+          />
+        )}
+        {currentStep === GameStep.PLAYING && <Game settings={settings} />}
+      </div>
     </div>
   );
 }
