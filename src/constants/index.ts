@@ -1,11 +1,17 @@
 // Game Settings
 export const POKEMON_COUNT = 8;
 export const FORTNITE_COUNT = 8;
+export const STARWARS_COUNT = 8;
 export const GRID_COLUMNS = 4;
 export const CARD_DIMENSIONS = {
   WIDTH: 40,
   HEIGHT: 40,
 };
+
+// API URLs
+export const STARWARS_API_URL = 'https://swapi.dev/api/people';
+export const POKE_API_URL = 'https://pokeapi.co/api/v2/pokemon/';
+export const FORTNITE_API_URL = 'https://fortnite-api.com/v2/cosmetics/br';
 
 // Pokemon API
 export const MIN_POKEMON_ID = 1;

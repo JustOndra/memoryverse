@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { GameSettings, GameType } from '../types';
 
@@ -39,6 +38,7 @@ const NewGameSetup: React.FC<NewGameSetupProps> = ({
       >
         <option value="pokemon">Pokemon</option>
         <option value="fortnite">Fortnite</option>
+        <option value="starwars">Star Wars</option>
       </select>
       <button
         type="submit"
