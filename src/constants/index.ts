@@ -2,14 +2,10 @@
 export const POKEMON_COUNT = 8;
 export const FORTNITE_COUNT = 8;
 export const STARWARS_COUNT = 8;
-export const GRID_COLUMNS = 4;
-export const CARD_DIMENSIONS = {
-  WIDTH: 40,
-  HEIGHT: 40,
-};
 
 // API URLs
-export const STARWARS_API_URL = 'https://swapi.dev/api/people';
+export const STARWARS_API_URL =
+  'https://akabab.github.io/starwars-api/api/all.json';
 export const POKE_API_URL = 'https://pokeapi.co/api/v2/pokemon/';
 export const FORTNITE_API_URL = 'https://fortnite-api.com/v2/cosmetics/br';
 
@@ -22,8 +18,26 @@ export const FORTNITE_API_LIMIT = 100;
 export const CARD_MATCH_DELAY = 1000; // milliseconds
 export const CARD_FLIP_DELAY = 1000; // milliseconds
 
-// Card Sizes
-export const CARD_WIDTH = 40;
-export const CARD_HEIGHT = 40;
-export const CARD_IMAGE_SIZE = 24;
-export const CARD_FRONT_IMAGE_SIZE = 36;
+// Star Wars Main Characters (names must match API exactly)
+export const STARWARS_MAIN_CHARACTERS = [
+  'Luke Skywalker',
+  'Leia Organa',
+  'Han Solo',
+  'Darth Vader',
+  'Obi-Wan Kenobi',
+  'Yoda',
+  'Chewbacca',
+  'R2-D2',
+  'C-3PO',
+  'Lando Calrissian',
+  'Boba Fett',
+  'Emperor Palpatine',
+  'Padmé Amidala',
+  'Qui-Gon Jinn',
+  'Mace Windu',
+  'Rey',
+  'Finn',
+  'Poe Dameron',
+  'Kylo Ren',
+  'BB-8',
+];

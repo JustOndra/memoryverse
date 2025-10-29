@@ -29,9 +29,32 @@ function App() {
     setCurrentStep(GameStep.MAIN_MENU);
   };
 
+  const appFontClass = (() => {
+    switch (currentStep) {
+      case GameStep.MAIN_MENU:
+        return 'font-menu';
+      case GameStep.NEW_GAME_SETUP:
+        return 'font-setup';
+      case GameStep.PLAYING:
+        switch (settings.gameType) {
+          case 'pokemon':
+            return 'font-pokemon game-font';
+          case 'fortnite':
+            return 'font-fortnite game-font';
+          case 'starwars':
+            return 'font-starwars game-font';
+          default:
+            return '';
+        }
+      default:
+        return '';
+    }
+  })();
   return (
-    <div className="bg-gradient-to-b from-teal-400 to-blue-500 min-h-screen">
-      <div className="flex items-center justify-center h-screen">
+    <div
+      className={`bg-linear-to-b from-teal-400 to-blue-500 min-h-screen flex items-center justify-center ${appFontClass}`}
+    >
+      <div>
         {currentStep === GameStep.MAIN_MENU && (
           <MainMenu onStartNewGame={handleStartNewGame} />
         )}

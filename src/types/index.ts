@@ -27,10 +27,12 @@ export interface FortniteData {
 }
 
 export interface StarWarsData {
-  url: string;
+  id: number;
   name: string;
-  birth_year: string;
+  image: string;
   gender: string;
+  species: string;
+  homeworld: string;
 }
 
 export type GameType = 'pokemon' | 'fortnite' | 'starwars';

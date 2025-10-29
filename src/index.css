@@ -1,1 +1,37 @@
 @import 'tailwindcss';
+
+/* Per-game font utility classes. These use freely available Google Fonts
+  chosen as visually-appropriate approximations of the game's signature
+  typefaces (official signature fonts are often proprietary). */
+.font-pokemon {
+  font-family: 'Luckiest Guy', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+}
+
+.font-fortnite {
+  font-family: 'Anton', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial;
+}
+
+.font-starwars {
+  font-family: 'Orbitron', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial;
+}
+
+/* Menu / Setup playful fonts */
+.font-menu {
+  font-family: 'Fredoka One', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial;
+}
+
+.font-setup {
+  font-family: 'Baloo 2', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial;
+}
+
+/* Example utility to scope a large font effect to a game container */
+.game-font {
+  /* Increase fallback weight slightly for bolder display */
+  font-weight: 700;
+}

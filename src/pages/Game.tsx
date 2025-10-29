@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import Card from '../components/Card';
-import { GRID_COLUMNS } from '../constants';
 
 import { useFlipCard } from '../hooks/useFlipCard';
 import { fetchGameData } from '../services/api';
@@ -22,8 +21,8 @@ const Game = ({ settings }: GameProps) => {
   if (isError) return <div>Error fetching data</div>;
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className={`grid grid-cols-${GRID_COLUMNS} gap-4 perspective`}>
+    <div className="flex items-center justify-center">
+      <div className={`grid grid-cols-4 gap-4 perspective`}>
         {data?.map((card, index) => (
           <Card
             key={index}

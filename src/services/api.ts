@@ -6,8 +6,14 @@ import {
   POKEMON_COUNT,
   STARWARS_API_URL,
   STARWARS_COUNT,
+  STARWARS_MAIN_CHARACTERS,
 } from '../constants';
-import { shuffleCards } from '../lib/utils';
+import {
+  shuffleCards,
+  transformFortniteData,
+  transformPokemonData,
+  transformStarWarsData,
+} from '../lib/utils';
 import {
   CardData,
   FortniteData,
@@ -15,25 +21,6 @@ import {
   PokemonData,
   StarWarsData,
 } from '../types';
-
-const transformPokemonData = (data: PokemonData): CardData => ({
-  id: data.id,
-  name: data.name,
-  image: data.sprites.front_default,
-});
-
-const transformFortniteData = (data: FortniteData): CardData => ({
-  id: data.id.toLowerCase(),
-  name: data.name,
-  image: data.images.icon ?? data.images.smallIcon,
-});
-
-const transformStarWarsData = (data: StarWarsData): CardData => ({
-  id: data.url,
-  name: data.name,
-  // Using placeholder images based on gender
-  image: `https://robohash.org/${data.name}?set=set5&size=150x150`,
-});
 
 export const fetchGameData = async (
   gameType: GameType
@@ -96,24 +83,35 @@ export const fetchGameData = async (
       }
 
       case 'starwars': {
-        const res = await fetch(`${STARWARS_API_URL}?page=1`);
+        const res = await fetch(STARWARS_API_URL);
         if (!res.ok) {
           throw new Error('Failed to fetch Star Wars data');
         }
 
-        const response = (await res.json()) as { results: StarWarsData[] };
-        const allCharacters = response.results;
+        const allCharacters = (await res.json()) as StarWarsData[];
 
-        if (allCharacters.length < STARWARS_COUNT) {
-          throw new Error('Not enough characters returned from Star Wars API');
+        // Filter for main characters with valid images
+        const validCharacters = allCharacters.filter(
+          (char) =>
+            char.image &&
+            char.image.trim() !== '' &&
+            STARWARS_MAIN_CHARACTERS.includes(char.name)
+        );
+
+        if (validCharacters.length < STARWARS_COUNT) {
+          throw new Error(
+            'Not enough main characters with images found in Star Wars API'
+          );
         }
 
         const randomCharacters: StarWarsData[] = [];
         while (randomCharacters.length < STARWARS_COUNT) {
-          const randomIndex = Math.floor(Math.random() * allCharacters.length);
-          const character = allCharacters[randomIndex];
+          const randomIndex = Math.floor(
+            Math.random() * validCharacters.length
+          );
+          const character = validCharacters[randomIndex];
           if (
-            !randomCharacters.find((existing) => existing.url === character.url)
+            !randomCharacters.find((existing) => existing.id === character.id)
           ) {
             randomCharacters.push(character);
           }
