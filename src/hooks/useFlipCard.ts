@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { CARD_FLIP_DELAY, CARD_MATCH_DELAY } from '../constants';
 import { CardData } from '../types';
 
-export const useMemoryGame = (cards: CardData[] | undefined) => {
+export const useFlipCard = (cards: CardData[] | undefined) => {
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<(string | number)[]>([]);
   const [disabled, setDisabled] = useState(false);
@@ -17,17 +18,18 @@ export const useMemoryGame = (cards: CardData[] | undefined) => {
         setMatchedCards((prev) => [...prev, cards[firstIndex].id]);
         setFlippedCards([]);
         setDisabled(false);
-      }, 1000);
+      }, CARD_MATCH_DELAY);
     } else {
       setTimeout(() => {
         setFlippedCards([]);
         setDisabled(false);
-      }, 1000);
+      }, CARD_FLIP_DELAY);
     }
   }, [flippedCards, cards]);
 
   const handleFlip = (index: number) => {
-    if (disabled || flippedCards.length >= 2 || flippedCards.includes(index)) return;
+    if (disabled || flippedCards.length >= 2 || flippedCards.includes(index))
+      return;
     setFlippedCards((prev) => [...prev, index]);
   };
 
@@ -38,4 +40,3 @@ export const useMemoryGame = (cards: CardData[] | undefined) => {
     disabled,
   };
 };
-

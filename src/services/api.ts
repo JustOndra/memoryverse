@@ -1,8 +1,10 @@
+import {
+  FORTNITE_API_LIMIT,
+  FORTNITE_COUNT,
+  POKEMON_COUNT,
+} from '../constants';
 import { shuffleCards } from '../lib/utils';
 import { CardData, FortniteData, GameType, PokemonData } from '../types';
-
-const POKEMON_COUNT = 8;
-const FORTNITE_COUNT = 8;
 
 const transformPokemonData = (data: PokemonData): CardData => ({
   id: data.id,
@@ -43,7 +45,7 @@ export const fetchGameData = async (
 
       case 'fortnite': {
         const url = new URL(`${process.env.FORTNITE_API_URL}/search/all`);
-        url.searchParams.append('limit', '100');
+        url.searchParams.append('limit', FORTNITE_API_LIMIT.toString());
         url.searchParams.append('type', 'outfit');
 
         const res = await fetch(url.toString());

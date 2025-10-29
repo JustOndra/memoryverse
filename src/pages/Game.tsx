@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import Card from '../components/Card';
-import { useMemoryGame } from '../hooks/useMemoryGame';
+import { GRID_COLUMNS } from '../constants';
+
+import { useFlipCard } from '../hooks/useFlipCard';
 import { fetchGameData } from '../services/api';
 import { GameSettings } from '../types';
 
@@ -14,14 +16,14 @@ const Game = ({ settings }: GameProps) => {
     queryFn: () => fetchGameData(settings.gameType),
   });
 
-  const { flippedCards, matchedCards, handleFlip } = useMemoryGame(data);
+  const { flippedCards, matchedCards, handleFlip } = useFlipCard(data);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching data</div>;
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="grid grid-cols-4 gap-4 perspective">
+      <div className={`grid grid-cols-${GRID_COLUMNS} gap-4 perspective`}>
         {data?.map((card, index) => (
           <Card
             key={index}
