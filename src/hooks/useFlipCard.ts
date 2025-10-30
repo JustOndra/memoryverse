@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { CARD_FLIP_DELAY, CARD_MATCH_DELAY } from '../constants';
 import { CardData } from '../types';
 
-export const useFlipCard = (cards: CardData[] | undefined) => {
+export const useFlipCard = (
+  cards: CardData[] | undefined,
+  options?: { onMatch?: () => void }
+) => {
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<(string | number)[]>([]);
   const [disabled, setDisabled] = useState(false);
@@ -18,6 +21,7 @@ export const useFlipCard = (cards: CardData[] | undefined) => {
         setMatchedCards((prev) => [...prev, cards[firstIndex].id]);
         setFlippedCards([]);
         setDisabled(false);
+        if (options?.onMatch) options.onMatch();
       }, CARD_MATCH_DELAY);
     } else {
       setTimeout(() => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MainMenu from './components/MainMenu';
 import NewGameSetup from './components/NewGameSetup';
 import Game from './pages/Game';
@@ -11,6 +11,9 @@ function App() {
     playerName: '',
     gameType: 'pokemon',
   });
+  const [score, setScore] = useState(0);
+  const [timer, setTimer] = useState(0); // seconds
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleStartNewGame = () => {
     setCurrentStep(GameStep.NEW_GAME_SETUP);
@@ -18,7 +21,29 @@ function App() {
 
   const handleStartPlaying = (e: React.FormEvent) => {
     e.preventDefault();
+    setScore(0);
+    setTimer(0);
     setCurrentStep(GameStep.PLAYING);
+  };
+
+  // Timer logic: start/stop timer when playing
+  useEffect(() => {
+    if (currentStep === GameStep.PLAYING) {
+      timerRef.current = setInterval(() => {
+        setTimer((t) => t + 1);
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [currentStep]);
+
+  const handleRestartGame = () => {
+    setScore(0);
+    setTimer(0);
+    setCurrentStep(GameStep.PLAYING); // re-mounts Game
   };
 
   const handleSettingsChange = (newSettings: GameSettings) => {
@@ -66,7 +91,16 @@ function App() {
             onBack={handleBackToMainMenu}
           />
         )}
-        {currentStep === GameStep.PLAYING && <Game settings={settings} />}
+        {currentStep === GameStep.PLAYING && (
+          <Game
+            settings={settings}
+            score={score}
+            setScore={setScore}
+            timer={timer}
+            onRestart={handleRestartGame}
+            onReturnToMenu={handleBackToMainMenu}
+          />
+        )}
       </div>
     </div>
   );
