@@ -71,6 +71,22 @@ Usage notes
 
 If you'd like, I can wire up basic UI hooks (leaderboard screen and a multiplayer lobby) next.
 
+Integration tests
+
+I added an integration test that runs against a real Supabase project. It is skipped unless you provide the following env vars (in your shell or a local `.env` file):
+
+- `SUPABASE_URL` (or `VITE_SUPABASE_URL`)
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+To run the integration test:
+
+```bash
+# set the vars in your environment or create a .env with the keys
+pnpm run test:integration
+```
+
+The integration test will perform temporary inserts/updates and clean them up afterward.
+
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list

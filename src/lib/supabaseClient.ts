@@ -1,8 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+// Prefer Vite `import.meta.env` when available, otherwise fall back to process.env for Node-based tests
+const supabaseUrl =
+  (typeof (import.meta as any)?.env !== 'undefined' &&
+    (import.meta as any).env.VITE_SUPABASE_URL) ||
+  process.env.SUPABASE_URL ||
+  process.env.VITE_SUPABASE_URL;
 
-export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseAnonKey =
+  (typeof (import.meta as any)?.env !== 'undefined' &&
+    (import.meta as any).env.VITE_SUPABASE_ANON_KEY) ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.VITE_SUPABASE_ANON_KEY;
+
+export const supabaseClient = createClient(
+  supabaseUrl as string,
+  supabaseAnonKey as string
+);
 
 export default supabaseClient;
