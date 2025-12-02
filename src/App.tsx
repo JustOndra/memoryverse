@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import backgroundImage from './assets/images/background.jpeg';
 import fortniteBg from './assets/images/fortnite-bg.jpeg';
 import pokemonBg from './assets/images/pokemon-bg.jpeg';
 import starwarsBg from './assets/images/starwars-bg.jpeg';
@@ -92,7 +93,7 @@ function App() {
     }
   })();
 
-  const backgroundImage = (() => {
+  const currentBackground = (() => {
     if (currentStep === GameStep.PLAYING || currentStep === GameStep.GAME_WON) {
       switch (settings.gameType) {
         case 'pokemon':
@@ -105,14 +106,20 @@ function App() {
           return undefined;
       }
     }
+    if (
+      currentStep === GameStep.MAIN_MENU ||
+      currentStep === GameStep.NEW_GAME_SETUP
+    ) {
+      return backgroundImage;
+    }
     return undefined;
   })();
   return (
     <div
       className={`bg-linear-to-b from-teal-400 to-blue-500 min-h-screen flex items-center justify-center ${appFontClass}`}
       style={{
-        backgroundImage: backgroundImage
-          ? `url(${backgroundImage})`
+        backgroundImage: currentBackground
+          ? `url(${currentBackground})`
           : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
