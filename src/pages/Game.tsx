@@ -13,6 +13,7 @@ interface GameProps {
   onRestart: () => void;
   onReturnToMenu: () => void;
   onGameWon?: (score: number, time: number) => void;
+  resetTrigger?: number;
 }
 
 const Game = ({
@@ -23,6 +24,7 @@ const Game = ({
   onRestart,
   onReturnToMenu,
   onGameWon,
+  resetTrigger,
 }: GameProps) => {
   const gameWonRef = useRef(false);
 
@@ -31,9 +33,28 @@ const Game = ({
     queryFn: () => fetchGameData(settings.gameType),
   });
 
-  const { flippedCards, matchedCards, handleFlip } = useFlipCard(data, {
-    onMatch: () => setScore(score + 10),
+  // Calculate score based on streak: base 10 points + multiplier for streaks
+  const calculateScore = (streak: number) => {
+    const basePoints = 10;
+    if (streak === 1) return basePoints; // First match: 10 points
+    if (streak === 2) return basePoints * 1.5; // 2x streak: 15 points
+    if (streak === 3) return basePoints * 2; // 3x streak: 20 points
+    if (streak >= 4) return basePoints * 2.5; // 4+ streak: 25 points
+    return basePoints;
+  };
+
+  const { flippedCards, matchedCards, handleFlip, streak } = useFlipCard(data, {
+    onMatch: (currentStreak) => {
+      const points = calculateScore(currentStreak);
+      setScore(score + points);
+    },
+    resetTrigger,
   });
+
+  // Reset gameWonRef when game is restarted
+  useEffect(() => {
+    gameWonRef.current = false;
+  }, [resetTrigger]);
 
   // Check for win condition
   useEffect(() => {
@@ -73,10 +94,41 @@ const Game = ({
           Restart Game
         </button>
       </div>
-      <div className="flex flex-row justify-between w-full max-w-2xl mb-2">
-        <div className="text-lg font-bold">Score: {score}</div>
-        <div className="text-lg font-bold">
-          Time: {minutes}:{seconds}
+
+      {/* Player Info Section */}
+      <div className="w-full max-w-2xl mb-4">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-xl border-2 border-purple-400/50">
+          <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-600 font-medium">Player</span>
+              <span className="text-2xl font-bold text-purple-600">
+                {settings.playerName}
+              </span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-sm text-gray-600 font-medium">Score</span>
+              <span className="text-2xl font-bold text-blue-600">{score}</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-sm text-gray-600 font-medium">Streak</span>
+              <div className="flex items-center gap-1">
+                <span className="text-2xl font-bold text-orange-600">
+                  {streak}
+                </span>
+                {streak >= 2 && (
+                  <span className="text-xs font-bold text-orange-500 bg-orange-100 px-2 py-1 rounded-full">
+                    {streak === 2 ? '1.5x' : streak === 3 ? '2x' : '2.5x'}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <span className="text-sm text-gray-600 font-medium">Time</span>
+              <span className="text-2xl font-bold text-green-600">
+                {minutes}:{seconds}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div className={`grid grid-cols-4 gap-4 perspective`}>

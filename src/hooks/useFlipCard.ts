@@ -4,11 +4,24 @@ import { CardData } from '../types';
 
 export const useFlipCard = (
   cards: CardData[] | undefined,
-  options?: { onMatch?: () => void }
+  options?: {
+    onMatch?: (streak: number) => void;
+    onMismatch?: () => void;
+    resetTrigger?: number;
+  }
 ) => {
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<(string | number)[]>([]);
   const [disabled, setDisabled] = useState(false);
+  const [streak, setStreak] = useState(0);
+
+  // Reset state when resetTrigger changes
+  useEffect(() => {
+    setFlippedCards([]);
+    setMatchedCards([]);
+    setDisabled(false);
+    setStreak(0);
+  }, [options?.resetTrigger]);
 
   useEffect(() => {
     if (flippedCards.length < 2 || !cards) return;
@@ -21,12 +34,18 @@ export const useFlipCard = (
         setMatchedCards((prev) => [...prev, cards[firstIndex].id]);
         setFlippedCards([]);
         setDisabled(false);
-        if (options?.onMatch) options.onMatch();
+        setStreak((prev) => {
+          const newStreak = prev + 1;
+          if (options?.onMatch) options.onMatch(newStreak);
+          return newStreak;
+        });
       }, CARD_MATCH_DELAY_MS);
     } else {
       setTimeout(() => {
         setFlippedCards([]);
         setDisabled(false);
+        setStreak(0);
+        if (options?.onMismatch) options.onMismatch();
       }, CARD_FLIP_DELAY_MS);
     }
   }, [flippedCards, cards]);
@@ -42,5 +61,6 @@ export const useFlipCard = (
     matchedCards,
     handleFlip,
     disabled,
+    streak,
   };
 };

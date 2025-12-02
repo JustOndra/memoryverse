@@ -8,12 +8,20 @@ export interface SaveScorePayload {
 }
 
 export const saveScore = async (payload: SaveScorePayload) => {
+  if (!supabaseClient) {
+    console.warn('Supabase is not configured. Score not saved.');
+    return null;
+  }
   const { data, error } = await supabaseClient.from('scores').insert([payload]);
   if (error) throw error;
   return data;
 };
 
 export const getTopScores = async (game_type: string, limit = 10) => {
+  if (!supabaseClient) {
+    console.warn('Supabase is not configured. Returning empty leaderboard.');
+    return [];
+  }
   const { data, error } = await supabaseClient
     .from('scores')
     .select('*')
@@ -28,6 +36,10 @@ export const createOrUpdateMatch = async (
   id: string,
   state: Record<string, any>
 ) => {
+  if (!supabaseClient) {
+    console.warn('Supabase is not configured. Match state not saved.');
+    return null;
+  }
   const payload = { id, state };
   const { data, error } = await supabaseClient
     .from('matches')
@@ -37,6 +49,10 @@ export const createOrUpdateMatch = async (
 };
 
 export const getMatch = async (id: string) => {
+  if (!supabaseClient) {
+    console.warn('Supabase is not configured. Cannot fetch match.');
+    return null;
+  }
   const { data, error } = await supabaseClient
     .from('matches')
     .select('*')
@@ -52,6 +68,14 @@ export const subscribeToMatch = (
   id: string,
   onUpdate: (payload: any) => void
 ) => {
+  if (!supabaseClient) {
+    console.warn('Supabase is not configured. Cannot subscribe to match.');
+    return {
+      channel: null,
+      unsubscribe: async () => {},
+    };
+  }
+
   const channel = supabaseClient
     .channel(`public:matches:id=eq.${id}`)
     .on(

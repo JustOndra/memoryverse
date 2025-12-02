@@ -6,7 +6,7 @@ import starwarsBg from './assets/images/starwars-bg.jpeg';
 import MainMenu from './components/MainMenu';
 import NewGameSetup from './components/NewGameSetup';
 import Game from './pages/Game';
-import { GameSettings } from './types';
+import { GameSettings, Player } from './types';
 import { GameStep } from './types/enums';
 
 function App() {
@@ -14,12 +14,16 @@ function App() {
   const [settings, setSettings] = useState<GameSettings>({
     playerName: '',
     gameType: 'pokemon',
+    isMultiplayer: false,
+    players: [],
   });
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0); // seconds
   const [finalTime, setFinalTime] = useState(0); // store the time when game was won
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [timerActive, setTimerActive] = useState(false);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const handleStartNewGame = () => {
     setCurrentStep(GameStep.NEW_GAME_SETUP);
@@ -27,6 +31,21 @@ function App() {
 
   const handleStartPlaying = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Initialize players array
+    const initialPlayers: Player[] =
+      settings.isMultiplayer && settings.players
+        ? settings.players
+        : [
+            {
+              id: '1',
+              name: settings.playerName,
+              score: 0,
+              isActive: true,
+            },
+          ];
+
+    setPlayers(initialPlayers);
     setScore(0);
     setTimer(0);
     setFinalTime(0);
@@ -52,6 +71,7 @@ function App() {
     setTimer(0);
     setFinalTime(0);
     setTimerActive(true);
+    setResetTrigger((prev) => prev + 1);
     setCurrentStep(GameStep.PLAYING);
   };
 
@@ -147,6 +167,7 @@ function App() {
             onRestart={handleRestartGame}
             onReturnToMenu={handleBackToMainMenu}
             onGameWon={handleGameWon}
+            resetTrigger={resetTrigger}
           />
         )}
         {currentStep === GameStep.GAME_WON && (

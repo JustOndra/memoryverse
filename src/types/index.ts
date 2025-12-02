@@ -37,7 +37,16 @@ export interface StarWarsData {
 
 export type GameType = 'pokemon' | 'fortnite' | 'starwars';
 
+export interface Player {
+  id: string;
+  name: string;
+  score: number;
+  isActive?: boolean;
+}
+
 export interface GameSettings {
   playerName: string;
   gameType: GameType;
+  isMultiplayer?: boolean;
+  players?: Player[];
 }

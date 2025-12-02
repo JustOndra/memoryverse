@@ -1,8 +1,7 @@
 import fortniteCard from '../assets/images/fortnite-card.jpg';
-import pokebal from '../assets/images/pokeball.png';
 import pokemonCard from '../assets/images/pokemon-card.jpg';
 import starwarsCard from '../assets/images/starwars-card.jpg';
-import vbucks from '../assets/images/vbucks.png';
+
 import { CardData, GameType } from '../types';
 
 type CardProps = {
@@ -35,17 +34,11 @@ const Card = ({
   const innerCardClasses = `
     relative 
     transform-3d
-    border-4 
-    border-black
     w-full 
     h-full 
     duration-1000
     ${isFlipped ? 'rotate-y-180' : ''}
   `;
-
-  const getBackImage = () => {
-    return gameType === 'pokemon' ? pokebal : vbucks;
-  };
 
   const getCardBackground = () => {
     switch (gameType) {
@@ -67,15 +60,13 @@ const Card = ({
           className={`absolute w-full h-full flex justify-center items-center backface-hidden bg-cover bg-center`}
           style={{ backgroundImage: `url(${getCardBackground()})` }}
         >
-          <img src={getBackImage()} alt="Card Back" className={`w-24 h-24`} />
+          {/* <img src={getBackImage()} alt="Card Back" className={`w-36 h-40`} /> */}
         </div>
         <div
           className={`absolute w-full h-full overflow-hidden backface-hidden rotate-y-180 bg-cover bg-center`}
-          style={{ backgroundImage: `url(${getCardBackground()})` }}
         >
-          <div className="flex flex-col items-center gap-4">
-            <img src={card.image} alt={card.name} className={`w-36 h-36`} />
-            <p className="text-center text-black capitalize">{card.name}</p>
+          <div className="flex items-center justify-center bg-white w-full h-full">
+            <img src={card.image} alt={card.name} />
           </div>
         </div>
       </div>
