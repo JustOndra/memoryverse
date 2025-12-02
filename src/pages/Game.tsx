@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Card from '../components/Card';
 import { useFlipCard } from '../hooks/useFlipCard';
 import { fetchGameData } from '../services/api';
@@ -24,6 +24,8 @@ const Game = ({
   onReturnToMenu,
   onGameWon,
 }: GameProps) => {
+  const gameWonRef = useRef(false);
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['game-data', settings.gameType],
     queryFn: () => fetchGameData(settings.gameType),
@@ -40,7 +42,8 @@ const Game = ({
       matchedCards.length === data.length / 2 &&
       matchedCards.length > 0
     ) {
-      if (onGameWon) {
+      if (onGameWon && !gameWonRef.current) {
+        gameWonRef.current = true;
         onGameWon(score, timer);
       }
     }

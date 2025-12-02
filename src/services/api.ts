@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
 import {
   FORTNITE_API_LIMIT,
   FORTNITE_API_URL,
@@ -9,6 +8,7 @@ import {
   STARWARS_COUNT,
   STARWARS_MAIN_CHARACTERS,
 } from '../constants';
+import { supabaseClient } from '../lib/supabaseClient';
 import {
   shuffleCards,
   transformFortniteData,
@@ -140,17 +140,7 @@ interface GameScore {
 
 export const saveScore = async (gameScore: GameScore): Promise<void> => {
   try {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseKey) {
-      console.error('Supabase configuration is missing');
-      throw new Error('Supabase is not configured');
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const { data, error } = await supabase.from('game_scores').insert([
+    const { data, error } = await supabaseClient.from('scores').insert([
       {
         player_name: gameScore.playerName,
         game_type: gameScore.gameType,
