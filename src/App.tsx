@@ -26,7 +26,6 @@ function App() {
     setCurrentStep(GameStep.PLAYING);
   };
 
-  // Timer logic: start/stop timer when playing
   useEffect(() => {
     if (currentStep === GameStep.PLAYING) {
       timerRef.current = setInterval(() => {
@@ -43,7 +42,7 @@ function App() {
   const handleRestartGame = () => {
     setScore(0);
     setTimer(0);
-    setCurrentStep(GameStep.PLAYING); // re-mounts Game
+    setCurrentStep(GameStep.PLAYING);
   };
 
   const handleSettingsChange = (newSettings: GameSettings) => {

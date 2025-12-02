@@ -1,3 +1,5 @@
+import pokebal from '../assets/images/pokeball.png';
+import vbucks from '../assets/images/vbucks.png';
 import { CardData, GameType } from '../types';
 
 type CardProps = {
@@ -39,7 +41,7 @@ const Card = ({
   `;
 
   const getBackImage = () => {
-    return gameType === 'pokemon' ? './pokeball.png' : './vbucks.png';
+    return gameType === 'pokemon' ? pokebal : vbucks;
   };
 
   return (

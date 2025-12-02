@@ -14,11 +14,9 @@ export const MIN_POKEMON_ID = 1;
 export const MAX_POKEMON_ID = 151; // Original Pokemon count
 export const FORTNITE_API_LIMIT = 100;
 
-// Animation Timings
-export const CARD_MATCH_DELAY = 1000; // milliseconds
-export const CARD_FLIP_DELAY = 1000; // milliseconds
+export const CARD_MATCH_DELAY_MS = 1000;
+export const CARD_FLIP_DELAY_MS = 1000;
 
-// Star Wars Main Characters (names must match API exactly)
 export const STARWARS_MAIN_CHARACTERS = [
   'Luke Skywalker',
   'Leia Organa',

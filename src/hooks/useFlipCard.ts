@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CARD_FLIP_DELAY, CARD_MATCH_DELAY } from '../constants';
+import { CARD_FLIP_DELAY_MS, CARD_MATCH_DELAY_MS } from '../constants';
 import { CardData } from '../types';
 
 export const useFlipCard = (
@@ -22,12 +22,12 @@ export const useFlipCard = (
         setFlippedCards([]);
         setDisabled(false);
         if (options?.onMatch) options.onMatch();
-      }, CARD_MATCH_DELAY);
+      }, CARD_MATCH_DELAY_MS);
     } else {
       setTimeout(() => {
         setFlippedCards([]);
         setDisabled(false);
-      }, CARD_FLIP_DELAY);
+      }, CARD_FLIP_DELAY_MS);
     }
   }, [flippedCards, cards]);
 

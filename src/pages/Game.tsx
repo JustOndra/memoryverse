@@ -26,12 +26,10 @@ const Game = ({
     queryFn: () => fetchGameData(settings.gameType),
   });
 
-  // Custom hook for flipping logic
   const { flippedCards, matchedCards, handleFlip } = useFlipCard(data, {
     onMatch: () => setScore(score + 10),
   });
 
-  // Format timer as mm:ss
   const minutes = Math.floor(timer / 60)
     .toString()
     .padStart(2, '0');
