@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import Card from '../components/Card';
 import { useFlipCard } from '../hooks/useFlipCard';
 import { fetchGameData } from '../services/api';
@@ -11,6 +12,7 @@ interface GameProps {
   timer: number;
   onRestart: () => void;
   onReturnToMenu: () => void;
+  onGameWon?: (score: number, time: number) => void;
 }
 
 const Game = ({
@@ -20,6 +22,7 @@ const Game = ({
   timer,
   onRestart,
   onReturnToMenu,
+  onGameWon,
 }: GameProps) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['game-data', settings.gameType],
@@ -29,6 +32,19 @@ const Game = ({
   const { flippedCards, matchedCards, handleFlip } = useFlipCard(data, {
     onMatch: () => setScore(score + 10),
   });
+
+  // Check for win condition
+  useEffect(() => {
+    if (
+      data &&
+      matchedCards.length === data.length / 2 &&
+      matchedCards.length > 0
+    ) {
+      if (onGameWon) {
+        onGameWon(score, timer);
+      }
+    }
+  }, [matchedCards, data, score, timer, onGameWon]);
 
   const minutes = Math.floor(timer / 60)
     .toString()

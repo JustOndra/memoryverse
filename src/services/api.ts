@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js';
 import {
   FORTNITE_API_LIMIT,
   FORTNITE_API_URL,
@@ -127,5 +128,45 @@ export const fetchGameData = async (
   } catch (error) {
     console.error(`Error fetching ${gameType} data:`, error);
     throw new Error(`Failed to load ${gameType} data`);
+  }
+};
+
+interface GameScore {
+  playerName: string;
+  gameType: GameType;
+  score: number;
+  timeSeconds: number;
+}
+
+export const saveScore = async (gameScore: GameScore): Promise<void> => {
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Supabase configuration is missing');
+      throw new Error('Supabase is not configured');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { data, error } = await supabase.from('game_scores').insert([
+      {
+        player_name: gameScore.playerName,
+        game_type: gameScore.gameType,
+        score: gameScore.score,
+        time_seconds: gameScore.timeSeconds,
+      },
+    ]);
+
+    if (error) {
+      console.error('Error saving score:', error);
+      throw new Error(`Failed to save score: ${error.message}`);
+    }
+
+    console.log('Score saved successfully:', data);
+  } catch (error) {
+    console.error('Error in saveScore:', error);
+    throw error;
   }
 };
