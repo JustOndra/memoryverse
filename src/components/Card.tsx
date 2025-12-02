@@ -1,4 +1,7 @@
+import fortniteCard from '../assets/images/fortnite-card.jpg';
 import pokebal from '../assets/images/pokeball.png';
+import pokemonCard from '../assets/images/pokemon-card.jpg';
+import starwarsCard from '../assets/images/starwars-card.jpg';
 import vbucks from '../assets/images/vbucks.png';
 import { CardData, GameType } from '../types';
 
@@ -44,16 +47,31 @@ const Card = ({
     return gameType === 'pokemon' ? pokebal : vbucks;
   };
 
+  const getCardBackground = () => {
+    switch (gameType) {
+      case 'pokemon':
+        return pokemonCard;
+      case 'fortnite':
+        return fortniteCard;
+      case 'starwars':
+        return starwarsCard;
+      default:
+        return pokemonCard;
+    }
+  };
+
   return (
     <div className={cardClasses} onClick={() => handleFlip(index)}>
       <div className={innerCardClasses}>
         <div
-          className={`absolute w-full h-full bg-white flex justify-center items-center backface-hidden`}
+          className={`absolute w-full h-full flex justify-center items-center backface-hidden bg-cover bg-center`}
+          style={{ backgroundImage: `url(${getCardBackground()})` }}
         >
           <img src={getBackImage()} alt="Card Back" className={`w-24 h-24`} />
         </div>
         <div
-          className={`absolute w-full h-full bg-white overflow-hidden backface-hidden rotate-y-180`}
+          className={`absolute w-full h-full overflow-hidden backface-hidden rotate-y-180 bg-cover bg-center`}
+          style={{ backgroundImage: `url(${getCardBackground()})` }}
         >
           <div className="flex flex-col items-center gap-4">
             <img src={card.image} alt={card.name} className={`w-36 h-36`} />
