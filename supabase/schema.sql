@@ -1,4 +1,4 @@
--- Supabase / Postgres schema for Match Two
+-- Supabase / Postgres schema for MemoryVerse
 
 -- Enable pgcrypto or use gen_random_uuid() if available
 -- Create scores table
