@@ -1,7 +1,6 @@
 import fortniteCard from '../assets/images/fortnite-card.jpg';
 import pokemonCard from '../assets/images/pokemon-card.jpg';
-import starwarsCard from '../assets/images/starwars-card.jpg';
-
+import simpsonsCard from '../assets/images/simpsons-card.jpg';
 import { CardData, GameType } from '../types';
 
 type CardProps = {
@@ -46,8 +45,8 @@ const Card = ({
         return pokemonCard;
       case 'fortnite':
         return fortniteCard;
-      case 'starwars':
-        return starwarsCard;
+      case 'simpsons':
+        return simpsonsCard;
       default:
         return pokemonCard;
     }

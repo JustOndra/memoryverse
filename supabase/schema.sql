@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS public.scores (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   player_name text NOT NULL,
   score integer NOT NULL CHECK (score >= 0),
-  game_type text NOT NULL CHECK (game_type IN ('pokemon', 'fortnite', 'starwars')),
+  game_type text NOT NULL CHECK (game_type IN ('pokemon', 'fortnite', 'simpsons')),
   time_seconds integer CHECK (time_seconds >= 0),
   streak_best integer DEFAULT 0 CHECK (streak_best >= 0),
   created_at timestamptz DEFAULT now()
@@ -17,7 +17,7 @@ CREATE INDEX IF NOT EXISTS idx_scores_game_type_time ON public.scores (game_type
 CREATE TABLE IF NOT EXISTS public.matches (
   id text PRIMARY KEY,
   state jsonb NOT NULL,
-  game_type text NOT NULL CHECK (game_type IN ('pokemon', 'fortnite', 'starwars')),
+  game_type text NOT NULL CHECK (game_type IN ('pokemon', 'fortnite', 'simpsons')),
   is_active boolean DEFAULT true,
   player_count integer DEFAULT 1 CHECK (player_count > 0),
   created_at timestamptz DEFAULT now(),

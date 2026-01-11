@@ -14,9 +14,9 @@
     'Helvetica Neue', Arial;
 }
 
-.font-starwars {
-  font-family: 'Orbitron', system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial;
+.font-simpsons {
+  font-family: 'Comic Neue', 'Comic Sans MS', system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
 /* Menu / Setup playful fonts */

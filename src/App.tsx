@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import backgroundImage from './assets/images/background.jpeg';
+import backgroundImage from './assets/images/background.jpg';
 import fortniteBg from './assets/images/fortnite-bg.jpeg';
 import pokemonBg from './assets/images/pokemon-bg.jpeg';
-import starwarsBg from './assets/images/starwars-bg.jpeg';
+import simpsonsBg from './assets/images/simpsons-bg.jpg';
 import MainMenu from './components/MainMenu';
 import NewGameSetup from './components/NewGameSetup';
 import Game from './pages/Game';
@@ -103,8 +103,8 @@ function App() {
             return 'font-pokemon game-font';
           case 'fortnite':
             return 'font-fortnite game-font';
-          case 'starwars':
-            return 'font-starwars game-font';
+          case 'simpsons':
+            return 'font-simpsons game-font';
           default:
             return '';
         }
@@ -120,8 +120,8 @@ function App() {
           return pokemonBg;
         case 'fortnite':
           return fortniteBg;
-        case 'starwars':
-          return starwarsBg;
+        case 'simpsons':
+          return simpsonsBg;
         default:
           return undefined;
       }
@@ -136,7 +136,7 @@ function App() {
   })();
   return (
     <div
-      className={`bg-linear-to-b from-teal-400 to-blue-500 min-h-screen flex items-center justify-center ${appFontClass}`}
+      className={`bg-linear-to-b from-slate-900 via-gray-900 to-slate-800 min-h-screen flex items-center justify-center ${appFontClass}`}
       style={{
         backgroundImage: currentBackground
           ? `url(${currentBackground})`

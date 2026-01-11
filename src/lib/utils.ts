@@ -1,5 +1,9 @@
-import { MAX_POKEMON_ID, MIN_POKEMON_ID } from '../constants';
-import { CardData, FortniteData, PokemonData, StarWarsData } from '../types';
+import {
+  MAX_POKEMON_ID,
+  MIN_POKEMON_ID,
+  SIMPSONS_IMAGE_BASE_URL,
+} from '../constants';
+import { CardData, FortniteData, PokemonData, SimpsonsData } from '../types';
 
 export const shuffleCards = <T>(data: T[]): T[] => {
   return [...data].sort(() => Math.random() - 0.5);
@@ -24,8 +28,8 @@ export const transformFortniteData = (data: FortniteData): CardData => ({
   image: data.images.icon ?? data.images.smallIcon,
 });
 
-export const transformStarWarsData = (data: StarWarsData): CardData => ({
+export const transformSimpsonsData = (data: SimpsonsData): CardData => ({
   id: data.id,
   name: data.name,
-  image: data.image,
+  image: `${SIMPSONS_IMAGE_BASE_URL}${data.portrait_path}`,
 });

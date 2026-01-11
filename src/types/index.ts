@@ -26,16 +26,16 @@ export interface FortniteData {
   };
 }
 
-export interface StarWarsData {
+export interface SimpsonsData {
   id: number;
   name: string;
-  image: string;
+  portrait_path: string;
+  occupation: string;
   gender: string;
-  species: string;
-  homeworld: string;
+  status: string;
 }
 
-export type GameType = 'pokemon' | 'fortnite' | 'starwars';
+export type GameType = 'pokemon' | 'fortnite' | 'simpsons';
 
 export interface Player {
   id: string;

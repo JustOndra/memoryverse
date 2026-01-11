@@ -97,11 +97,11 @@ const Game = ({
 
       {/* Player Info Section */}
       <div className="w-full max-w-2xl mb-4">
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-xl border-2 border-purple-400/50">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-xl border-2 border-violet-400/50">
           <div className="flex flex-row justify-between items-center">
             <div className="flex flex-col">
               <span className="text-sm text-gray-600 font-medium">Player</span>
-              <span className="text-2xl font-bold text-purple-600">
+              <span className="text-2xl font-bold text-violet-600">
                 {settings.playerName}
               </span>
             </div>

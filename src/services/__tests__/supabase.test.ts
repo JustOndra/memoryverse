@@ -48,7 +48,7 @@ describe('supabase service', () => {
   });
 
   it('saveScore throws when supabase returns error', async () => {
-    const payload = { player_name: 'Eve', score: 5, game_type: 'starwars' };
+    const payload = { player_name: 'Eve', score: 5, game_type: 'simpsons' };
     const insertMock = vi.fn(async () => ({
       data: null,
       error: new Error('insert failed'),

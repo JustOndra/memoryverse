@@ -4,23 +4,22 @@ import {
   FORTNITE_COUNT,
   POKE_API_URL,
   POKEMON_COUNT,
-  STARWARS_API_URL,
-  STARWARS_COUNT,
-  STARWARS_MAIN_CHARACTERS,
+  SIMPSONS_API_URL,
+  SIMPSONS_COUNT,
 } from '../constants';
 import { supabaseClient } from '../lib/supabaseClient';
 import {
   shuffleCards,
   transformFortniteData,
   transformPokemonData,
-  transformStarWarsData,
+  transformSimpsonsData,
 } from '../lib/utils';
 import {
   CardData,
   FortniteData,
   GameType,
   PokemonData,
-  StarWarsData,
+  SimpsonsData,
 } from '../types';
 
 export const fetchGameData = async (
@@ -83,30 +82,28 @@ export const fetchGameData = async (
         return shuffleCards([...items, ...items]);
       }
 
-      case 'starwars': {
-        const res = await fetch(STARWARS_API_URL);
+      case 'simpsons': {
+        const res = await fetch(SIMPSONS_API_URL);
         if (!res.ok) {
-          throw new Error('Failed to fetch Star Wars data');
+          throw new Error('Failed to fetch Simpsons data');
         }
 
-        const allCharacters = (await res.json()) as StarWarsData[];
+        const response = (await res.json()) as { results: SimpsonsData[] };
+        const allCharacters = response.results;
 
-        // Filter for main characters with valid images
+        // Filter for characters with valid images
         const validCharacters = allCharacters.filter(
-          (char) =>
-            char.image &&
-            char.image.trim() !== '' &&
-            STARWARS_MAIN_CHARACTERS.includes(char.name)
+          (char) => char.portrait_path && char.portrait_path.trim() !== ''
         );
 
-        if (validCharacters.length < STARWARS_COUNT) {
+        if (validCharacters.length < SIMPSONS_COUNT) {
           throw new Error(
-            'Not enough main characters with images found in Star Wars API'
+            'Not enough characters with images found in Simpsons API'
           );
         }
 
-        const randomCharacters: StarWarsData[] = [];
-        while (randomCharacters.length < STARWARS_COUNT) {
+        const randomCharacters: SimpsonsData[] = [];
+        while (randomCharacters.length < SIMPSONS_COUNT) {
           const randomIndex = Math.floor(
             Math.random() * validCharacters.length
           );
@@ -118,7 +115,7 @@ export const fetchGameData = async (
           }
         }
 
-        const characters = randomCharacters.map(transformStarWarsData);
+        const characters = randomCharacters.map(transformSimpsonsData);
         return shuffleCards([...characters, ...characters]);
       }
 
