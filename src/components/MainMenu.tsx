@@ -26,9 +26,6 @@ const MainMenu: React.FC<MainMenuProps> = ({ onStartNewGame }) => {
         <button className="w-full bg-linear-to-r from-fuchsia-600 to-pink-600 text-white py-4 px-8 rounded-xl font-bold text-xl shadow-2xl hover:from-fuchsia-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 border-2 border-fuchsia-300/50">
           LEADERBOARDS
         </button>
-        <button className="w-full bg-linear-to-r from-amber-500 to-orange-500 text-white py-4 px-8 rounded-xl font-bold text-xl shadow-2xl hover:from-amber-600 hover:to-orange-600 transform hover:scale-105 transition-all duration-200 border-2 border-amber-300/50">
-          OPTIONS
-        </button>
       </div>
     </div>
   );
