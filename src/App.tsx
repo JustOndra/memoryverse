@@ -6,6 +6,7 @@ import simpsonsBg from './assets/images/simpsons-bg.jpg';
 import MainMenu from './components/MainMenu';
 import NewGameSetup from './components/NewGameSetup';
 import Game from './pages/Game';
+import { saveScore } from './services/supabase';
 import { GameSettings, Player } from './types';
 import { GameStep } from './types/enums';
 
@@ -23,6 +24,7 @@ function App() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [timerActive, setTimerActive] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [activePlayerIndex, setActivePlayerIndex] = useState(0);
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const handleStartNewGame = () => {
@@ -47,6 +49,7 @@ function App() {
 
     setPlayers(initialPlayers);
     setScore(0);
+    setActivePlayerIndex(0);
     setTimer(0);
     setFinalTime(0);
     setTimerActive(true);
@@ -68,6 +71,9 @@ function App() {
 
   const handleRestartGame = () => {
     setScore(0);
+    // Reset player scores
+    setPlayers((prev) => prev.map((p) => ({ ...p, score: 0 })));
+    setActivePlayerIndex(0);
     setTimer(0);
     setFinalTime(0);
     setTimerActive(true);
@@ -75,10 +81,41 @@ function App() {
     setCurrentStep(GameStep.PLAYING);
   };
 
-  const handleGameWon = (finalScore: number, gameTime: number) => {
+  const handleGameWon = async (
+    finalScore: number,
+    gameTime: number,
+    finalPlayers: Player[]
+  ) => {
     setTimerActive(false);
     setFinalTime(gameTime);
     setCurrentStep(GameStep.GAME_WON);
+
+    // Save scores to leaderboard
+    try {
+      if (settings.isMultiplayer && finalPlayers.length > 1) {
+        // Save individual scores for each player in multiplayer mode
+        await Promise.all(
+          finalPlayers.map((player) =>
+            saveScore({
+              player_name: player.name,
+              score: player.score,
+              game_type: settings.gameType,
+              time_seconds: gameTime,
+            })
+          )
+        );
+      } else {
+        // Save score for single player
+        await saveScore({
+          player_name: settings.playerName,
+          score: finalScore,
+          game_type: settings.gameType,
+          time_seconds: gameTime,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save score to leaderboard:', error);
+    }
   };
 
   const handleSettingsChange = (newSettings: GameSettings) => {
@@ -163,6 +200,10 @@ function App() {
             settings={settings}
             score={score}
             setScore={setScore}
+            players={players}
+            setPlayers={setPlayers}
+            activePlayerIndex={activePlayerIndex}
+            setActivePlayerIndex={setActivePlayerIndex}
             timer={timer}
             onRestart={handleRestartGame}
             onReturnToMenu={handleBackToMainMenu}
@@ -176,9 +217,37 @@ function App() {
             <div className="bg-white rounded-lg p-8 shadow-lg">
               <div className="text-2xl font-bold mb-4">Game Results</div>
               <div className="text-xl mb-4">
-                <p>Player: {settings.playerName}</p>
+                {settings.isMultiplayer && players.length > 1 ? (
+                  <>
+                    <div className="space-y-2 mb-4">
+                      {players
+                        .slice()
+                        .sort((a, b) => b.score - a.score)
+                        .map((player, idx) => (
+                          <div
+                            key={player.id}
+                            className={`flex justify-between items-center p-2 rounded ${
+                              idx === 0
+                                ? 'bg-yellow-100 border-2 border-yellow-400'
+                                : 'bg-gray-100'
+                            }`}
+                          >
+                            <span className="font-semibold">
+                              {idx === 0 ? '🏆 ' : ''}
+                              {player.name}
+                            </span>
+                            <span className="font-bold text-blue-600">
+                              {player.score} pts
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </>
+                ) : (
+                  <p>Player: {settings.playerName}</p>
+                )}
                 <p>Game Type: {settings.gameType}</p>
-                <p>Final Score: {score}</p>
+                {!settings.isMultiplayer && <p>Final Score: {score}</p>}
                 <p>
                   Time: {Math.floor(finalTime / 60)}:
                   {(finalTime % 60).toString().padStart(2, '0')}

@@ -3,16 +3,20 @@ import { useEffect, useRef } from 'react';
 import Card from '../components/Card';
 import { useFlipCard } from '../hooks/useFlipCard';
 import { fetchGameData } from '../services/api';
-import { GameSettings } from '../types';
+import { GameSettings, Player } from '../types';
 
 interface GameProps {
   settings: GameSettings;
   score: number;
   setScore: (score: number) => void;
+  players: Player[];
+  setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+  activePlayerIndex: number;
+  setActivePlayerIndex: React.Dispatch<React.SetStateAction<number>>;
   timer: number;
   onRestart: () => void;
   onReturnToMenu: () => void;
-  onGameWon?: (score: number, time: number) => void;
+  onGameWon?: (score: number, time: number, players: Player[]) => void;
   resetTrigger?: number;
 }
 
@@ -20,6 +24,10 @@ const Game = ({
   settings,
   score,
   setScore,
+  players,
+  setPlayers,
+  activePlayerIndex,
+  setActivePlayerIndex,
   timer,
   onRestart,
   onReturnToMenu,
@@ -33,30 +41,46 @@ const Game = ({
     queryFn: () => fetchGameData(settings.gameType),
   });
 
-  // Calculate score based on streak: base 10 points + multiplier for streaks
   const calculateScore = (streak: number) => {
     const basePoints = 10;
-    if (streak === 1) return basePoints; // First match: 10 points
-    if (streak === 2) return basePoints * 1.5; // 2x streak: 15 points
-    if (streak === 3) return basePoints * 2; // 3x streak: 20 points
-    if (streak >= 4) return basePoints * 2.5; // 4+ streak: 25 points
+
+    if (streak === 3) return basePoints * 2;
+    if (streak >= 4) return basePoints * 2.5;
     return basePoints;
+  };
+
+  // Switch to next player (for multiplayer turn-based)
+  const switchPlayer = () => {
+    if (settings.isMultiplayer && players.length > 1) {
+      setActivePlayerIndex((prev) => (prev + 1) % players.length);
+    }
   };
 
   const { flippedCards, matchedCards, handleFlip, streak } = useFlipCard(data, {
     onMatch: (currentStreak) => {
       const points = calculateScore(currentStreak);
-      setScore(score + points);
+      if (settings.isMultiplayer && players.length > 1) {
+        // Update the active player's score
+        setPlayers((prev) =>
+          prev.map((p, idx) =>
+            idx === activePlayerIndex ? { ...p, score: p.score + points } : p
+          )
+        );
+      } else {
+        setScore(score + points);
+      }
+    },
+    onMismatch: () => {
+      // Switch player on mismatch in multiplayer
+      switchPlayer();
     },
     resetTrigger,
   });
 
-  // Reset gameWonRef when game is restarted
   useEffect(() => {
     gameWonRef.current = false;
   }, [resetTrigger]);
 
-  // Check for win condition
   useEffect(() => {
     if (
       data &&
@@ -65,10 +89,10 @@ const Game = ({
     ) {
       if (onGameWon && !gameWonRef.current) {
         gameWonRef.current = true;
-        onGameWon(score, timer);
+        onGameWon(score, timer, players);
       }
     }
-  }, [matchedCards, data, score, timer, onGameWon]);
+  }, [matchedCards, data, score, timer, onGameWon, players]);
 
   const minutes = Math.floor(timer / 60)
     .toString()
@@ -99,16 +123,60 @@ const Game = ({
       <div className="w-full max-w-2xl mb-4">
         <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-xl border-2 border-violet-400/50">
           <div className="flex flex-row justify-between items-center">
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-600 font-medium">Player</span>
-              <span className="text-2xl font-bold text-violet-600">
-                {settings.playerName}
+            {/* Single Player or Player 1 */}
+            <div
+              className={`flex flex-col p-2 rounded-lg transition-all ${
+                settings.isMultiplayer && activePlayerIndex === 0
+                  ? 'bg-violet-100 ring-2 ring-violet-500'
+                  : ''
+              }`}
+            >
+              <span className="text-sm text-gray-600 font-medium">
+                {settings.isMultiplayer ? 'Player 1' : 'Player'}
               </span>
+              <span className="text-2xl font-bold text-violet-600">
+                {settings.isMultiplayer && players[0]
+                  ? players[0].name
+                  : settings.playerName}
+              </span>
+              {settings.isMultiplayer && players[0] && (
+                <span className="text-lg font-semibold text-blue-600">
+                  {players[0].score} pts
+                </span>
+              )}
             </div>
-            <div className="flex flex-col items-center">
-              <span className="text-sm text-gray-600 font-medium">Score</span>
-              <span className="text-2xl font-bold text-blue-600">{score}</span>
-            </div>
+
+            {/* Player 2 (only in multiplayer) */}
+            {settings.isMultiplayer && players[1] && (
+              <div
+                className={`flex flex-col p-2 rounded-lg transition-all ${
+                  activePlayerIndex === 1
+                    ? 'bg-fuchsia-100 ring-2 ring-fuchsia-500'
+                    : ''
+                }`}
+              >
+                <span className="text-sm text-gray-600 font-medium">
+                  Player 2
+                </span>
+                <span className="text-2xl font-bold text-fuchsia-600">
+                  {players[1].name}
+                </span>
+                <span className="text-lg font-semibold text-blue-600">
+                  {players[1].score} pts
+                </span>
+              </div>
+            )}
+
+            {/* Score for single player mode */}
+            {!settings.isMultiplayer && (
+              <div className="flex flex-col items-center">
+                <span className="text-sm text-gray-600 font-medium">Score</span>
+                <span className="text-2xl font-bold text-blue-600">
+                  {score}
+                </span>
+              </div>
+            )}
+
             <div className="flex flex-col items-center">
               <span className="text-sm text-gray-600 font-medium">Streak</span>
               <div className="flex items-center gap-1">
