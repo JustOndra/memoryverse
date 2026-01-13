@@ -8,7 +8,7 @@ import { GameSettings, Player } from '../types';
 interface GameProps {
   settings: GameSettings;
   score: number;
-  setScore: (score: number) => void;
+  setScore: React.Dispatch<React.SetStateAction<number>>;
   players: Player[];
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
   activePlayerIndex: number;
@@ -43,13 +43,12 @@ const Game = ({
 
   const calculateScore = (streak: number) => {
     const basePoints = 10;
-
+    if (streak === 2) return basePoints * 1.5;
     if (streak === 3) return basePoints * 2;
     if (streak >= 4) return basePoints * 2.5;
     return basePoints;
   };
 
-  // Switch to next player (for multiplayer turn-based)
   const switchPlayer = () => {
     if (settings.isMultiplayer && players.length > 1) {
       setActivePlayerIndex((prev) => (prev + 1) % players.length);
@@ -60,18 +59,16 @@ const Game = ({
     onMatch: (currentStreak) => {
       const points = calculateScore(currentStreak);
       if (settings.isMultiplayer && players.length > 1) {
-        // Update the active player's score
         setPlayers((prev) =>
           prev.map((p, idx) =>
             idx === activePlayerIndex ? { ...p, score: p.score + points } : p
           )
         );
       } else {
-        setScore(score + points);
+        setScore((prevScore) => prevScore + points);
       }
     },
     onMismatch: () => {
-      // Switch player on mismatch in multiplayer
       switchPlayer();
     },
     resetTrigger,
@@ -99,8 +96,40 @@ const Game = ({
     .padStart(2, '0');
   const seconds = (timer % 60).toString().padStart(2, '0');
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error fetching data</div>;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-[400px]">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-xl border-2 border-violet-400/50">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-violet-500 border-t-transparent"></div>
+            <p className="text-xl font-semibold text-violet-600">
+              Loading cards...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-[400px]">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-xl border-2 border-red-400/50">
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-xl font-semibold text-red-600">
+              Failed to load game data
+            </p>
+            <button
+              className="bg-violet-500 text-white py-2 px-6 rounded-lg hover:bg-violet-600 transition-colors"
+              onClick={onReturnToMenu}
+            >
+              Return to Menu
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -119,11 +148,9 @@ const Game = ({
         </button>
       </div>
 
-      {/* Player Info Section */}
       <div className="w-full max-w-2xl mb-4">
         <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-xl border-2 border-violet-400/50">
           <div className="flex flex-row justify-between items-center">
-            {/* Single Player or Player 1 */}
             <div
               className={`flex flex-col p-2 rounded-lg transition-all ${
                 settings.isMultiplayer && activePlayerIndex === 0
@@ -146,7 +173,6 @@ const Game = ({
               )}
             </div>
 
-            {/* Player 2 (only in multiplayer) */}
             {settings.isMultiplayer && players[1] && (
               <div
                 className={`flex flex-col p-2 rounded-lg transition-all ${
@@ -167,7 +193,6 @@ const Game = ({
               </div>
             )}
 
-            {/* Score for single player mode */}
             {!settings.isMultiplayer && (
               <div className="flex flex-col items-center">
                 <span className="text-sm text-gray-600 font-medium">Score</span>
@@ -202,7 +227,7 @@ const Game = ({
       <div className={`grid grid-cols-4 gap-4 perspective`}>
         {data?.map((card, index) => (
           <Card
-            key={index}
+            key={`${card.id}-${index}`}
             card={card}
             index={index}
             isFlipped={flippedCards.includes(index)}

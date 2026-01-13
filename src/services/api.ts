@@ -7,7 +7,6 @@ import {
   SIMPSONS_API_URL,
   SIMPSONS_COUNT,
 } from '../constants';
-import { supabaseClient } from '../lib/supabaseClient';
 import {
   shuffleCards,
   transformFortniteData,
@@ -91,7 +90,6 @@ export const fetchGameData = async (
         const response = (await res.json()) as { results: SimpsonsData[] };
         const allCharacters = response.results;
 
-        // Filter for characters with valid images
         const validCharacters = allCharacters.filter(
           (char) => char.portrait_path && char.portrait_path.trim() !== ''
         );
@@ -125,35 +123,5 @@ export const fetchGameData = async (
   } catch (error) {
     console.error(`Error fetching ${gameType} data:`, error);
     throw new Error(`Failed to load ${gameType} data`);
-  }
-};
-
-interface GameScore {
-  playerName: string;
-  gameType: GameType;
-  score: number;
-  timeSeconds: number;
-}
-
-export const saveScore = async (gameScore: GameScore): Promise<void> => {
-  try {
-    const { data, error } = await supabaseClient.from('scores').insert([
-      {
-        player_name: gameScore.playerName,
-        game_type: gameScore.gameType,
-        score: gameScore.score,
-        time_seconds: gameScore.timeSeconds,
-      },
-    ]);
-
-    if (error) {
-      console.error('Error saving score:', error);
-      throw new Error(`Failed to save score: ${error.message}`);
-    }
-
-    console.log('Score saved successfully:', data);
-  } catch (error) {
-    console.error('Error in saveScore:', error);
-    throw error;
   }
 };

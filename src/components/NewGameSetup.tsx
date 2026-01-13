@@ -69,8 +69,7 @@ const NewGameSetup: React.FC<NewGameSetupProps> = ({
         </div>
 
         <form onSubmit={onStartPlaying} className="flex flex-col gap-5 w-full">
-          {/* Two Player Toggle */}
-          <div className="flex items-center justify-between bg-white/10 rounded-xl p-4 border border-white/20">
+          <div className="flex items-center justify-between bg-white/10 rounded-xl p-4 border border-white/20">>
             <span className="text-white font-semibold text-lg drop-shadow-lg">
               Two Players
             </span>
@@ -103,7 +102,6 @@ const NewGameSetup: React.FC<NewGameSetupProps> = ({
             />
           </div>
 
-          {/* Player 2 Name Input */}
           {settings.isMultiplayer && (
             <div className="flex flex-col gap-2">
               <label className="text-white font-semibold text-lg drop-shadow-lg">

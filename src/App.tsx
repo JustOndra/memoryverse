@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import backgroundImage from './assets/images/background.jpg';
 import fortniteBg from './assets/images/fortnite-bg.jpeg';
 import pokemonBg from './assets/images/pokemon-bg.jpeg';
@@ -19,8 +19,8 @@ function App() {
     players: [],
   });
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(0); // seconds
-  const [finalTime, setFinalTime] = useState(0); // store the time when game was won
+  const [timer, setTimer] = useState(0);
+  const [finalTime, setFinalTime] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [timerActive, setTimerActive] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
@@ -34,7 +34,6 @@ function App() {
   const handleStartPlaying = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Initialize players array
     const initialPlayers: Player[] =
       settings.isMultiplayer && settings.players
         ? settings.players
@@ -71,7 +70,6 @@ function App() {
 
   const handleRestartGame = () => {
     setScore(0);
-    // Reset player scores
     setPlayers((prev) => prev.map((p) => ({ ...p, score: 0 })));
     setActivePlayerIndex(0);
     setTimer(0);
@@ -90,10 +88,8 @@ function App() {
     setFinalTime(gameTime);
     setCurrentStep(GameStep.GAME_WON);
 
-    // Save scores to leaderboard
     try {
       if (settings.isMultiplayer && finalPlayers.length > 1) {
-        // Save individual scores for each player in multiplayer mode
         await Promise.all(
           finalPlayers.map((player) =>
             saveScore({
@@ -105,7 +101,6 @@ function App() {
           )
         );
       } else {
-        // Save score for single player
         await saveScore({
           player_name: settings.playerName,
           score: finalScore,
@@ -124,6 +119,11 @@ function App() {
 
   const handleBackToMainMenu = () => {
     setTimerActive(false);
+    setScore(0);
+    setTimer(0);
+    setFinalTime(0);
+    setPlayers([]);
+    setActivePlayerIndex(0);
     setCurrentStep(GameStep.MAIN_MENU);
   };
 
