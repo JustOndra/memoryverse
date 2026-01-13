@@ -69,7 +69,7 @@ const NewGameSetup: React.FC<NewGameSetupProps> = ({
         </div>
 
         <form onSubmit={onStartPlaying} className="flex flex-col gap-5 w-full">
-          <div className="flex items-center justify-between bg-white/10 rounded-xl p-4 border border-white/20">>
+          <div className="flex items-center justify-between bg-white/10 rounded-xl p-4 border border-white/20">
             <span className="text-white font-semibold text-lg drop-shadow-lg">
               Two Players
             </span>
