@@ -1,92 +1,51 @@
-# React + TypeScript + Vite
+# Memoryverse
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Memoryverse is a modern twist on the classic memory game, designed to keep your mind sharp and entertained. Explore vibrant worlds inspired by popular themes like Pokémon, Fortnite, and The Simpsons, each with its own beautiful design.
 
-Currently, two official plugins are available:
+You can play solo to challenge yourself or enjoy a game with friends locally. We’re also working on an exciting online multiplayer mode so you can play with anyone, anywhere. It’s the perfect way to have fun while giving your brain a workout!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+-   **Immersive Themes**: Choose from Pokémon, Fortnite, or The Simpsons.
+-   **Solo & Multiplayer**: Beat your personal best or compete with friends locally.
+-   **Leaderboards**: Track top scores and rankings (powered by Supabase).
+-   **Coming Soon**: Online Multiplayer mode.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Tech Stack
 
-- Configure the top-level `parserOptions` property like this:
+-   **Frontend**: React, TypeScript, Tailwind CSS
+-   **Build Tool**: Vite
+-   **Backend**: Supabase (Database & Realtime)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
-```
+## Setup & Running Locally
 
-## Supabase Integration (Multiplayer & Scores)
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd memoryverse
+    ```
 
-This project includes a minimal Supabase integration for multiplayer match state and leaderboards.
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
 
-- Supabase client: `src/lib/supabase.ts`
-- Service helpers: `src/services/supabase.ts`
-- DB schema: `supabase/schema.sql`
+3.  **Environment Setup:**
+    Create a `.env.local` file in the root directory and add your Supabase credentials (found in your Supabase project settings):
+    ```env
+    VITE_SUPABASE_URL=your_supabase_url
+    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
+    *Note: If you don't have these, you can still run the app, but leaderboards won't function.*
 
-Setup steps
+4.  **Start the development server:**
+    ```bash
+    pnpm dev
+    ```
 
-1. Create a Supabase project at https://app.supabase.com and copy the project URL and anon/public key.
-2. Add the variables to your local environment (or CI) using the keys in `.env.example`:
+## Supabase Integration (Optional)
 
-```bash
-# example .env.local
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=public-anon-key
-```
-
-3. Apply the SQL schema. You can run the SQL in the Supabase SQL editor or via `psql` if you have DB access:
-
-```sql
--- copy the contents of `supabase/schema.sql` into the Supabase SQL editor and run it
-```
-
-4. Install the new dependency:
-
-```bash
-# using pnpm (recommended for this repo)
-pnpm add @supabase/supabase-js
-```
-
-5. Start the dev server:
-
-```bash
-pnpm dev
-```
-
-Usage notes
-
-- `src/services/supabase.ts` exposes helpers: `saveScore`, `getTopScores`, `createOrUpdateMatch`, `getMatch`, and `subscribeToMatch`.
-- `subscribeToMatch` uses Supabase Realtime (Postgres changes) to receive updates for a specific match.
-- For production, keep sensitive keys (service role) only on server-side processes.
-
-If you'd like, I can wire up basic UI hooks (leaderboard screen and a multiplayer lobby) next.
-
-Integration tests
-
-I added an integration test that runs against a real Supabase project. It is skipped unless you provide the following env vars (in your shell or a local `.env` file):
-
-- `SUPABASE_URL` (or `VITE_SUPABASE_URL`)
-- `SUPABASE_SERVICE_ROLE_KEY`
-
-To run the integration test:
-
-```bash
-# set the vars in your environment or create a .env with the keys
-pnpm run test:integration
-```
-
-The integration test will perform temporary inserts/updates and clean them up afterward.
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+To enable leaderboards and multiplayer features:
+1.  Create a project at [Supabase](https://app.supabase.com).
+2.  Run the SQL schema found in `supabase/schema.sql` in your Supabase SQL editor.
+3.  Add the project URL and Anon Key to your `.env.local`.
