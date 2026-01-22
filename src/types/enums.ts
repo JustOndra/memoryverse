@@ -3,4 +3,5 @@ export enum GameStep {
   NEW_GAME_SETUP = 'NEW_GAME_SETUP',
   PLAYING = 'PLAYING',
   GAME_WON = 'GAME_WON',
+  LEADERBOARDS = 'LEADERBOARDS',
 }

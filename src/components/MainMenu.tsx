@@ -2,9 +2,13 @@ import React from 'react';
 
 interface MainMenuProps {
   onStartNewGame: () => void;
+  onShowLeaderboards: () => void;
 }
 
-const MainMenu: React.FC<MainMenuProps> = ({ onStartNewGame }) => {
+const MainMenu: React.FC<MainMenuProps> = ({
+  onStartNewGame,
+  onShowLeaderboards,
+}) => {
   return (
     <div className="bg-black/40 backdrop-blur-md rounded-3xl p-10 border border-white/20 shadow-2xl">
       <div className="flex flex-col items-center gap-6 w-96">
@@ -23,7 +27,10 @@ const MainMenu: React.FC<MainMenuProps> = ({ onStartNewGame }) => {
         >
           NEW GAME
         </button>
-        <button className="w-full bg-linear-to-r from-fuchsia-600 to-pink-600 text-white py-4 px-8 rounded-xl font-bold text-xl shadow-2xl hover:from-fuchsia-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 border-2 border-fuchsia-300/50">
+        <button
+          onClick={onShowLeaderboards}
+          className="w-full bg-linear-to-r from-fuchsia-600 to-pink-600 text-white py-4 px-8 rounded-xl font-bold text-xl shadow-2xl hover:from-fuchsia-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 border-2 border-fuchsia-300/50"
+        >
           LEADERBOARDS
         </button>
       </div>

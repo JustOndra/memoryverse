@@ -3,6 +3,7 @@ import backgroundImage from './assets/images/background.jpg';
 import fortniteBg from './assets/images/fortnite-bg.jpeg';
 import pokemonBg from './assets/images/pokemon-bg.jpeg';
 import simpsonsBg from './assets/images/simpsons-bg.jpg';
+import Leaderboards from './components/Leaderboards';
 import MainMenu from './components/MainMenu';
 import NewGameSetup from './components/NewGameSetup';
 import Game from './pages/Game';
@@ -29,6 +30,10 @@ function App() {
 
   const handleStartNewGame = () => {
     setCurrentStep(GameStep.NEW_GAME_SETUP);
+  };
+
+  const handleShowLeaderboards = () => {
+    setCurrentStep(GameStep.LEADERBOARDS);
   };
 
   const handleStartPlaying = (e: React.FormEvent) => {
@@ -82,7 +87,7 @@ function App() {
   const handleGameWon = async (
     finalScore: number,
     gameTime: number,
-    finalPlayers: Player[]
+    finalPlayers: Player[],
   ) => {
     setTimerActive(false);
     setFinalTime(gameTime);
@@ -97,8 +102,8 @@ function App() {
               score: player.score,
               game_type: settings.gameType,
               time_seconds: gameTime,
-            })
-          )
+            }),
+          ),
         );
       } else {
         await saveScore({
@@ -165,7 +170,8 @@ function App() {
     }
     if (
       currentStep === GameStep.MAIN_MENU ||
-      currentStep === GameStep.NEW_GAME_SETUP
+      currentStep === GameStep.NEW_GAME_SETUP ||
+      currentStep === GameStep.LEADERBOARDS
     ) {
       return backgroundImage;
     }
@@ -185,7 +191,13 @@ function App() {
     >
       <div>
         {currentStep === GameStep.MAIN_MENU && (
-          <MainMenu onStartNewGame={handleStartNewGame} />
+          <MainMenu
+            onStartNewGame={handleStartNewGame}
+            onShowLeaderboards={handleShowLeaderboards}
+          />
+        )}
+        {currentStep === GameStep.LEADERBOARDS && (
+          <Leaderboards onBack={handleBackToMainMenu} />
         )}
         {currentStep === GameStep.NEW_GAME_SETUP && (
           <NewGameSetup

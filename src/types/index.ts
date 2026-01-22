@@ -50,3 +50,13 @@ export interface GameSettings {
   isMultiplayer?: boolean;
   players?: Player[];
 }
+
+export interface Score {
+  id: string;
+  player_name: string;
+  score: number;
+  game_type: string;
+  time_seconds: number | null;
+  streak_best: number;
+  created_at: string;
+}
