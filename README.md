@@ -4,6 +4,10 @@ Memoryverse is a modern twist on the classic memory game, designed to keep your 
 
 You can play solo to challenge yourself or enjoy a game with friends locally. We’re also working on an exciting online multiplayer mode so you can play with anyone, anywhere. It’s the perfect way to have fun while giving your brain a workout!
 
+## Demo
+You can try it here:
+https://memoryversegame.netlify.app
+
 ## Features
 
 -   **Immersive Themes**: Choose from Pokémon, Fortnite, or The Simpsons.
