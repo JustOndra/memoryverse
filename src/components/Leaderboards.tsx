@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import { getTopScores } from '../services/supabase';
 import { GameType, Score } from '../types';
 
@@ -8,27 +9,19 @@ interface LeaderboardsProps {
 
 const Leaderboards: React.FC<LeaderboardsProps> = ({ onBack }) => {
   const [selectedGameType, setSelectedGameType] = useState<GameType>('pokemon');
-  const [scores, setScores] = useState<Score[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadLeaderboard();
-  }, [selectedGameType]);
+  const {
+    data: scores = [],
+    isLoading,
+    error,
+  } = useQuery<Score[]>({
+    queryKey: ['leaderboards', selectedGameType],
+    queryFn: async () => (await getTopScores(selectedGameType, 10)) || [],
+    staleTime: 5 * 60 * 1000,
+  });
 
-  const loadLeaderboard = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getTopScores(selectedGameType, 10);
-      setScores(data || []);
-    } catch (err) {
-      console.error('Error loading leaderboard:', err);
-      setError('Failed to load leaderboard');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const errorMessage =
+    error instanceof Error ? error.message : 'Failed to load leaderboard';
 
   const formatTime = (seconds: number | null) => {
     if (seconds === null || seconds === undefined) return 'N/A';
@@ -104,13 +97,13 @@ const Leaderboards: React.FC<LeaderboardsProps> = ({ onBack }) => {
 
         {/* Leaderboard Table */}
         <div className="bg-white/10 rounded-lg overflow-hidden">
-          {loading ? (
+          {isLoading ? (
             <div className="text-center py-12 text-white text-xl">
               Loading...
             </div>
           ) : error ? (
             <div className="text-center py-12 text-red-400 text-xl">
-              {error}
+              {errorMessage}
             </div>
           ) : scores.length === 0 ? (
             <div className="text-center py-12 text-white/70 text-xl">
